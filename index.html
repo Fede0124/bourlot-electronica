@@ -7,6 +7,8 @@
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -1144,6 +1146,568 @@ select{
 
 }
 
+/* =========================
+   REFINAMIENTO VISUAL
+========================= */
+
+:root{
+    --fondo:#081019;
+    --fondo-panel:#0d1824;
+    --fondo-elevado:#111f2d;
+    --borde:#203447;
+    --borde-suave:#172b3c;
+    --texto:#e8f0f5;
+    --texto-suave:#8fa5b5;
+    --acento:#27a9d6;
+    --acento-fuerte:#1687b5;
+    --acento-brillo:rgba(39,169,214,.18);
+}
+
+*{
+    font-family:'Space Grotesk',Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:
+        linear-gradient(135deg,rgba(39,169,214,.035),transparent 38%),
+        var(--fondo);
+    color:var(--texto);
+}
+
+.app{
+    background:linear-gradient(90deg,rgba(39,169,214,.025),transparent 24%);
+}
+
+.sidebar{
+    width:225px;
+    padding:21px 13px;
+    background:#071019;
+    border-right:1px solid var(--borde);
+    box-shadow:12px 0 32px rgba(0,0,0,.16);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+    padding:0 8px;
+    font-family:'Rajdhani',sans-serif;
+    font-size:20px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+}
+
+.logo::before{
+    display:none;
+}
+
+.logo-image{
+    width:31px;
+    height:31px;
+    flex:0 0 31px;
+    object-fit:cover;
+    border-radius:6px;
+    box-shadow:0 0 0 4px rgba(39,169,214,.1);
+}
+
+.logo span{
+    font:500 10px 'Space Grotesk',sans-serif;
+    letter-spacing:.08em;
+    color:var(--texto-suave);
+    text-transform:uppercase;
+}
+
+.menu li{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 12px;
+    margin-bottom:4px;
+    border-radius:6px;
+    color:var(--texto-suave);
+    font-size:13px;
+    transition:background .18s ease,color .18s ease,transform .18s ease;
+}
+
+.menu li:hover{
+    background:var(--fondo-elevado);
+    color:var(--texto);
+    transform:translateX(2px);
+}
+
+.menu li.active{
+    background:linear-gradient(90deg,var(--acento-fuerte),#116480);
+    color:#fff;
+    box-shadow:0 7px 18px rgba(22,135,181,.2);
+}
+
+.menu-icon,
+.ui-icon{
+    display:inline-grid;
+    place-items:center;
+    width:18px;
+    height:18px;
+    flex:0 0 18px;
+    color:currentColor;
+    font:700 16px 'Rajdhani',sans-serif;
+    line-height:1;
+}
+
+.icon-home::before{content:'⌂'}
+.icon-clientes::before{content:'♙'}
+.icon-vehiculos::before{content:'◇'}
+.icon-ordenes::before{content:'▤'}
+.icon-presupuestos::before{content:'▧'}
+.icon-stock::before{content:'▦'}
+.icon-caja::before{content:'$'}
+.icon-reportes::before{content:'▥'}
+.icon-turnos::before{content:'◫'}
+.icon-configuracion::before{content:'⚙'}
+.icon-user::before{content:'●'}
+.icon-add::before{content:'+'}
+.icon-search::before{content:'⌕'}
+.icon-save::before{content:'▣'}
+.icon-back::before{content:'←'}
+.icon-edit::before{content:'✎'}
+.icon-delete::before{content:'×'}
+.icon-confirm::before{content:'✓'}
+.icon-dashboard-car::before{content:'◇'}
+.icon-tools::before{content:'⌁'}
+.icon-calendar::before{content:'◫'}
+.icon-money::before{content:'$'}
+.icon-fuel::before{content:'◒'}
+.icon-damage::before{content:'△'}
+.icon-kit::before{content:'▦'}
+.icon-note::before{content:'▤'}
+.icon-voice::before{content:'◌'}
+
+.main{
+    padding:26px;
+    background:transparent;
+}
+
+.topbar{
+    margin-bottom:25px;
+    padding-bottom:17px;
+    border-bottom:1px solid var(--borde-suave);
+}
+
+.topbar h1,
+.formulario h2,
+.busqueda h2,
+.panel h2,
+.cliente-opcion h2,
+.vehiculo-opcion h2,
+.orden-opcion h2{
+    font-family:'Rajdhani',sans-serif;
+    letter-spacing:.025em;
+}
+
+.topbar h1{
+    font-size:28px;
+}
+
+.topbar p,
+.panel p,
+.cliente-opcion p,
+.vehiculo-opcion p,
+.orden-opcion p{
+    color:var(--texto-suave);
+}
+
+.user{
+    padding:8px 12px;
+    border-color:var(--borde);
+    border-radius:6px;
+    background:var(--fondo-panel);
+    font-size:13px;
+}
+
+.header-brand,
+.dashboard-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--texto);
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+}
+
+.header-brand{
+    margin-left:auto;
+    margin-right:12px;
+    font-size:12px;
+    line-height:1.05;
+}
+
+.header-brand small{
+    color:var(--texto-suave);
+    font:500 8px 'Space Grotesk',sans-serif;
+    letter-spacing:.07em;
+}
+
+.dashboard-brand{
+    margin-bottom:19px;
+    padding:14px 17px;
+    border:1px solid var(--borde);
+    border-left:3px solid var(--acento);
+    border-radius:8px;
+    background:linear-gradient(90deg,rgba(39,169,214,.1),rgba(13,24,36,.72));
+}
+
+.dashboard-brand strong,
+.dashboard-brand span:last-child{
+    display:block;
+}
+
+.dashboard-brand strong{
+    font:600 18px 'Rajdhani',sans-serif;
+    letter-spacing:.04em;
+}
+
+.dashboard-brand div span{
+    margin-top:2px;
+    color:var(--texto-suave);
+    font:400 11px 'Space Grotesk',sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+}
+
+.brand-mark{
+    display:grid;
+    place-items:center;
+    width:32px;
+    height:32px;
+    flex:0 0 32px;
+    border-radius:6px;
+    color:#071019;
+    background:var(--acento);
+    font:700 13px 'Rajdhani',sans-serif;
+    letter-spacing:0;
+    box-shadow:0 0 0 4px rgba(39,169,214,.1);
+}
+
+.brand-image{
+    width:32px;
+    height:32px;
+    flex:0 0 32px;
+    object-fit:cover;
+    border-radius:6px;
+    box-shadow:0 0 0 4px rgba(39,169,214,.1);
+}
+
+.card,
+.panel,
+.cliente-opcion,
+.vehiculo-opcion,
+.orden-opcion,
+.formulario,
+.busqueda{
+    background:var(--fondo-panel);
+    border-color:var(--borde);
+    border-radius:9px;
+    box-shadow:0 8px 25px rgba(0,0,0,.2);
+}
+
+.dashboard-cards,
+.dashboard-sections{
+    gap:17px;
+}
+
+.card{
+    padding:19px;
+}
+
+.card .icon,
+.cliente-opcion .icon,
+.vehiculo-opcion .icon,
+.orden-opcion .icon{
+    display:grid;
+    place-items:center;
+    width:34px;
+    height:34px;
+    margin-bottom:12px;
+    color:var(--acento);
+    font:700 24px 'Rajdhani',sans-serif;
+}
+
+.number{
+    font-family:'Rajdhani',sans-serif;
+    font-size:26px;
+}
+
+.panel{
+    padding:21px;
+}
+
+.clientes-opciones,
+.vehiculos-opciones,
+.ordenes-opciones{
+    gap:20px;
+}
+
+.cliente-opcion,
+.vehiculo-opcion,
+.orden-opcion{
+    padding:28px;
+}
+
+.cliente-opcion:hover,
+.vehiculo-opcion:hover,
+.orden-opcion:hover{
+    border-color:var(--acento);
+    box-shadow:0 10px 27px rgba(0,0,0,.28);
+}
+
+.formulario,
+.busqueda{
+    padding:25px;
+}
+
+.formulario h2,
+.busqueda h2{
+    margin-bottom:21px;
+}
+
+.form-grid{
+    gap:17px;
+}
+
+.campo label{
+    margin-bottom:6px;
+    color:#c4d3dc;
+    font-size:13px;
+}
+
+.campo input,
+.campo textarea,
+.campo select,
+.busqueda-campo input,
+.modal input{
+    padding:10px;
+    background:#091520;
+    border-color:var(--borde);
+    border-radius:6px;
+    font-size:14px;
+}
+
+.campo input:focus,
+.campo textarea:focus,
+.campo select:focus,
+.busqueda-campo input:focus,
+.modal input:focus{
+    border-color:var(--acento);
+    box-shadow:0 0 0 3px var(--acento-brillo);
+}
+
+.campo textarea{
+    min-height:105px;
+}
+
+.botones{
+    margin-top:20px;
+    gap:8px;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:10px 16px;
+    border-radius:6px;
+    font-size:13px;
+    transition:transform .18s ease,background .18s ease,box-shadow .18s ease;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary,
+.btn-buscar{
+    background:var(--acento-fuerte);
+}
+
+.btn-primary:hover,
+.btn-buscar:hover{
+    background:var(--acento);
+    box-shadow:0 6px 16px rgba(39,169,214,.2);
+}
+
+.btn-secondary{
+    background:#243746;
+    color:#d8e5eb;
+}
+
+.btn-secondary:hover{
+    background:#2d485a;
+}
+
+.busquedas-individuales{
+    gap:17px;
+}
+
+.busqueda-campo{
+    padding:17px;
+    background:#0a1722;
+    border-color:var(--borde);
+    border-radius:8px;
+}
+
+.busqueda-campo h3{
+    margin-bottom:10px;
+    font-family:'Rajdhani',sans-serif;
+    color:#dce8ee;
+}
+
+.resultados{
+    margin-top:20px;
+    padding:17px;
+    background:#0a1722;
+    border-color:var(--borde);
+    border-radius:8px;
+}
+
+.resultado-item{
+    padding:12px;
+    margin-bottom:8px;
+    background:var(--fondo-elevado);
+    border-color:var(--borde);
+    border-radius:6px;
+}
+
+.resultado-item:hover{
+    border-color:var(--acento);
+    background:#142b3b;
+}
+
+.or-numero{
+    background:linear-gradient(135deg,#0c2735,#102238);
+    border-color:var(--acento-fuerte);
+    padding:15px;
+    margin-bottom:20px;
+}
+
+.or-numero strong{
+    font-family:'Rajdhani',sans-serif;
+    font-size:26px;
+    color:#6bd4f2;
+}
+
+.or-seccion{
+    margin-top:25px;
+    padding-top:21px;
+    border-color:var(--borde-suave);
+}
+
+.or-seccion h3,
+.datos-seleccionados h3,
+.elementos h3{
+    font-family:'Rajdhani',sans-serif;
+    letter-spacing:.02em;
+}
+
+.datos-seleccionados,
+.estado-panel,
+.voz-cliente,
+.auto-area,
+.tipo-panel,
+.leyenda,
+.combustible-panel,
+.danos-registrados,
+.elementos{
+    background:var(--fondo-panel);
+    border-color:var(--borde);
+    border-radius:8px;
+}
+
+.datos-seleccionados{
+    padding:17px;
+    margin-top:20px;
+}
+
+.dato{
+    padding:10px;
+    background:var(--fondo-elevado);
+    border-color:var(--borde);
+}
+
+.panel-titulo{
+    padding:11px;
+    background:#0c2735;
+    color:#6bd4f2;
+    font-family:'Rajdhani',sans-serif;
+}
+
+.estado-panel{
+    padding:17px;
+}
+
+.estado-layout{
+    grid-template-columns:175px minmax(400px,1fr) 230px;
+    gap:17px;
+}
+
+.auto-area{
+    padding:13px;
+}
+
+.auto-titulo{
+    margin-bottom:10px;
+    color:#6bd4f2;
+    font-family:'Rajdhani',sans-serif;
+}
+
+.elementos{
+    margin-top:17px;
+    padding:17px;
+}
+
+.elementos-grid{
+    gap:12px;
+}
+
+.modal{
+    padding:21px;
+    border-color:var(--borde);
+    border-radius:10px;
+    background:var(--fondo-panel);
+}
+
+@media(max-width:1200px){
+    .estado-layout{
+        grid-template-columns:165px 1fr;
+    }
+}
+
+@media(max-width:700px){
+    .sidebar{
+        width:100%;
+        padding:15px 12px;
+    }
+
+    .main{
+        padding:15px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .topbar h1{
+        font-size:25px;
+    }
+
+    .header-brand{
+        display:none;
+    }
+}
+
 </style>
 </head>
 
@@ -1154,7 +1718,8 @@ select{
 <aside class="sidebar">
 
 <div class="logo">
-🔧 Bourlot
+<img class="logo-image" src="logo%20cuadrado.jpg" alt="Logo Bourlot Electrónica Automotriz">
+<strong>Bourlot</strong>
 <span>Electrónica Automotriz</span>
 </div>
 
@@ -1163,30 +1728,30 @@ select{
 <li id="menuInicio"
 class="active"
 onclick="mostrarInicio()">
-🏠 Inicio
+<span class="menu-icon icon-home" aria-hidden="true"></span>Inicio
 </li>
 
 <li id="menuClientes"
 onclick="mostrarClientes()">
-👥 Clientes
+<span class="menu-icon icon-clientes" aria-hidden="true"></span>Clientes
 </li>
 
 <li id="menuVehiculos"
 onclick="mostrarVehiculos()">
-🚗 Vehículos
+<span class="menu-icon icon-vehiculos" aria-hidden="true"></span>Vehículos
 </li>
 
 <li id="menuOrdenes"
 onclick="mostrarOrdenes()">
-🔧 Órdenes de reparación
+<span class="menu-icon icon-ordenes" aria-hidden="true"></span>Órdenes de reparación
 </li>
 
-<li>📋 Presupuestos</li>
-<li>📦 Stock</li>
-<li>💰 Caja</li>
-<li>📊 Reportes</li>
-<li>📅 Turnos</li>
-<li>⚙️ Configuración</li>
+<li><span class="menu-icon icon-presupuestos" aria-hidden="true"></span>Presupuestos</li>
+<li><span class="menu-icon icon-stock" aria-hidden="true"></span>Stock</li>
+<li><span class="menu-icon icon-caja" aria-hidden="true"></span>Caja</li>
+<li><span class="menu-icon icon-reportes" aria-hidden="true"></span>Reportes</li>
+<li><span class="menu-icon icon-turnos" aria-hidden="true"></span>Turnos</li>
+<li><span class="menu-icon icon-configuracion" aria-hidden="true"></span>Configuración</li>
 
 </ul>
 
@@ -1201,8 +1766,13 @@ onclick="mostrarOrdenes()">
 <p id="subtitulo">Panel de control del taller</p>
 </div>
 
+<div class="header-brand" aria-label="Bourlot Electrónica Automotriz">
+<img class="brand-image" src="logo%20cuadrado.jpg" alt="">
+<span>Bourlot<br><small>Electrónica Automotriz</small></span>
+</div>
+
 <div class="user">
-👤 Administrador
+<span class="ui-icon icon-user" aria-hidden="true"></span> Administrador
 </div>
 
 </div>
@@ -1214,28 +1784,36 @@ onclick="mostrarOrdenes()">
 
 <div id="inicio">
 
+<div class="dashboard-brand" aria-label="Bourlot Electrónica Automotriz">
+<img class="brand-image" src="logo%20cuadrado.jpg" alt="">
+<div>
+<strong>Bourlot Electrónica Automotriz</strong>
+<span>Diagnóstico y gestión de taller</span>
+</div>
+</div>
+
 <div class="dashboard-cards">
 
 <div class="card">
-<div class="icon">🚗</div>
+<div class="icon icon-dashboard-car" aria-hidden="true"></div>
 <h3>Vehículos en el taller</h3>
 <div id="dashboardVehiculos" class="number">0</div>
 </div>
 
 <div class="card">
-<div class="icon">🔧</div>
+<div class="icon icon-tools" aria-hidden="true"></div>
 <h3>Órdenes abiertas</h3>
 <div id="dashboardOrdenes" class="number">0</div>
 </div>
 
 <div class="card">
-<div class="icon">📅</div>
+<div class="icon icon-calendar" aria-hidden="true"></div>
 <h3>Turnos de hoy</h3>
 <div class="number">0</div>
 </div>
 
 <div class="card">
-<div class="icon">💰</div>
+<div class="icon icon-money" aria-hidden="true"></div>
 <h3>Facturación del mes</h3>
 <div class="number">$0</div>
 </div>
@@ -1245,12 +1823,12 @@ onclick="mostrarOrdenes()">
 <div class="dashboard-sections">
 
 <div class="panel">
-<h2>🚗 Vehículos en el taller</h2>
+<h2><span class="ui-icon icon-dashboard-car" aria-hidden="true"></span> Vehículos en el taller</h2>
 <p>No hay vehículos cargados.</p>
 </div>
 
 <div class="panel">
-<h2>📅 Próximos turnos</h2>
+<h2><span class="ui-icon icon-calendar" aria-hidden="true"></span> Próximos turnos</h2>
 <p>No hay turnos.</p>
 </div>
 
@@ -1270,7 +1848,7 @@ onclick="mostrarOrdenes()">
 <div class="cliente-opcion"
 onclick="nuevoCliente()">
 
-<div class="icon">➕</div>
+<div class="icon icon-add" aria-hidden="true"></div>
 <h2>Nuevo cliente</h2>
 <p>Registrar un nuevo cliente.</p>
 
@@ -1279,7 +1857,7 @@ onclick="nuevoCliente()">
 <div class="cliente-opcion"
 onclick="buscarCliente()">
 
-<div class="icon">🔎</div>
+<div class="icon icon-search" aria-hidden="true"></div>
 <h2>Buscar cliente</h2>
 <p>Buscar por apellido, nombre o patente.</p>
 
@@ -1298,7 +1876,7 @@ onclick="buscarCliente()">
 
 <div class="formulario">
 
-<h2>➕ Nuevo cliente</h2>
+<h2><span class="ui-icon icon-add" aria-hidden="true"></span> Nuevo cliente</h2>
 
 <div class="form-grid">
 
@@ -1348,12 +1926,12 @@ onclick="buscarCliente()">
 
 <button class="btn btn-primary"
 onclick="guardarCliente()">
-💾 Guardar cliente
+<span class="ui-icon icon-save" aria-hidden="true"></span>Guardar cliente
 </button>
 
 <button class="btn btn-secondary"
 onclick="mostrarClientes()">
-← Volver
+<span class="ui-icon icon-back" aria-hidden="true"></span>Volver
 </button>
 
 </div>
@@ -1371,48 +1949,48 @@ onclick="mostrarClientes()">
 
 <div class="busqueda">
 
-<h2>🔎 Buscar cliente</h2>
+<h2><span class="ui-icon icon-search" aria-hidden="true"></span> Buscar cliente</h2>
 
 <div class="busquedas-individuales">
 
 <div class="busqueda-campo">
 
-<h3>👤 Apellido</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Apellido</h3>
 
 <input id="buscarApellido"
 placeholder="Ingrese apellido">
 
 <button class="btn btn-buscar"
 onclick="buscarPorApellido()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
 
 <div class="busqueda-campo">
 
-<h3>👤 Nombre</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Nombre</h3>
 
 <input id="buscarNombre"
 placeholder="Ingrese nombre">
 
 <button class="btn btn-buscar"
 onclick="buscarPorNombre()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
 
 <div class="busqueda-campo">
 
-<h3>🚗 Patente</h3>
+<h3><span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Patente</h3>
 
 <input id="buscarPatente"
 placeholder="Ingrese patente">
 
 <button class="btn btn-buscar"
 onclick="buscarPorPatente()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1442,7 +2020,7 @@ Los resultados aparecerán acá.
 <div class="vehiculo-opcion"
 onclick="nuevoVehiculo()">
 
-<div class="icon">➕</div>
+<div class="icon icon-add" aria-hidden="true"></div>
 
 <h2>Nuevo vehículo</h2>
 
@@ -1455,7 +2033,7 @@ Registrar vehículo y asociarlo a un cliente.
 <div class="vehiculo-opcion"
 onclick="buscarVehiculo()">
 
-<div class="icon">🔎</div>
+<div class="icon icon-search" aria-hidden="true"></div>
 
 <h2>Buscar vehículo</h2>
 
@@ -1478,7 +2056,7 @@ Buscar por modelo o motor.
 
 <div class="formulario">
 
-<h2>➕ Nuevo vehículo</h2>
+<h2><span class="ui-icon icon-add" aria-hidden="true"></span> Nuevo vehículo</h2>
 
 <div class="form-grid">
 
@@ -1531,7 +2109,7 @@ Buscar por modelo o motor.
 
 <div class="or-seccion">
 
-<h3>👤 Cliente propietario</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Cliente propietario</h3>
 
 <p class="or-ayuda">
 Buscá un cliente ya creado por apellido, nombre o DNI.
@@ -1547,7 +2125,7 @@ Buscá un cliente ya creado por apellido, nombre o DNI.
 
 <button class="btn btn-buscar"
 onclick="buscarClienteParaVehiculo('apellido')">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1560,7 +2138,7 @@ onclick="buscarClienteParaVehiculo('apellido')">
 
 <button class="btn btn-buscar"
 onclick="buscarClienteParaVehiculo('nombre')">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1573,7 +2151,7 @@ onclick="buscarClienteParaVehiculo('nombre')">
 
 <button class="btn btn-buscar"
 onclick="buscarClienteParaVehiculo('dni')">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1591,12 +2169,12 @@ Ningún cliente seleccionado.
 
 <button class="btn btn-primary"
 onclick="guardarVehiculo()">
-💾 Guardar vehículo
+<span class="ui-icon icon-save" aria-hidden="true"></span>Guardar vehículo
 </button>
 
 <button class="btn btn-secondary"
 onclick="mostrarVehiculos()">
-← Volver
+<span class="ui-icon icon-back" aria-hidden="true"></span>Volver
 </button>
 
 </div>
@@ -1614,34 +2192,34 @@ onclick="mostrarVehiculos()">
 
 <div class="busqueda">
 
-<h2>🔎 Buscar vehículo</h2>
+<h2><span class="ui-icon icon-search" aria-hidden="true"></span> Buscar vehículo</h2>
 
 <div class="busquedas-individuales">
 
 <div class="busqueda-campo">
 
-<h3>🚗 Modelo</h3>
+<h3><span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Modelo</h3>
 
 <input id="buscarModelo"
 placeholder="Ingrese modelo">
 
 <button class="btn btn-buscar"
 onclick="buscarPorModelo()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
 
 <div class="busqueda-campo">
 
-<h3>⚙️ Motor</h3>
+<h3><span class="ui-icon icon-configuracion" aria-hidden="true"></span> Motor</h3>
 
 <input id="buscarMotor"
 placeholder="Ingrese motor">
 
 <button class="btn btn-buscar"
 onclick="buscarPorMotor()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1653,7 +2231,7 @@ onclick="buscarPorMotor()">
 <input id="buscarVehiculoPatente" placeholder="Ingrese patente">
 
 <button class="btn btn-buscar" onclick="buscarPorPatenteVehiculo()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -1681,7 +2259,7 @@ Los resultados aparecerán acá.
 <div class="orden-opcion"
 onclick="nuevaOrden()">
 
-<div class="icon">➕</div>
+<div class="icon icon-add" aria-hidden="true"></div>
 
 <h2>Nueva orden de reparación</h2>
 
@@ -1694,7 +2272,7 @@ Crear una OR cuando ingresa un vehículo al taller.
 <div class="orden-opcion"
 onclick="buscarOrden()">
 
-<div class="icon">🔎</div>
+<div class="icon icon-search" aria-hidden="true"></div>
 
 <h2>Buscar orden</h2>
 
@@ -1730,13 +2308,13 @@ OR-000001
 
 <div class="or-seccion">
 
-<h3>👤 Identificación del cliente y vehículo</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Identificación del cliente y vehículo</h3>
 
 <div class="busquedas-individuales">
 
 <div class="busqueda-campo">
 
-<h3>👤 Cliente</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Cliente</h3>
 
 <input id="orBuscarApellido"
 placeholder="Apellido">
@@ -1749,7 +2327,7 @@ placeholder="DNI">
 
 <button class="btn btn-buscar"
 onclick="buscarClienteOR()">
-🔎 Buscar cliente
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar cliente
 </button>
 
 </div>
@@ -1757,7 +2335,7 @@ onclick="buscarClienteOR()">
 
 <div class="busqueda-campo">
 
-<h3>🚗 Vehículo</h3>
+<h3><span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Vehículo</h3>
 
 <input id="orBuscarPatente"
 placeholder="Patente">
@@ -1767,7 +2345,7 @@ placeholder="Modelo">
 
 <button class="btn btn-buscar"
 onclick="buscarVehiculoOR()">
-🔎 Buscar vehículo
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar vehículo
 </button>
 
 </div>
@@ -1786,7 +2364,7 @@ Buscá un cliente o un vehículo.
 
 <div class="datos-seleccionados">
 
-<h3>👤 Datos del cliente</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Datos del cliente</h3>
 
 <div class="datos-grid">
 
@@ -1814,7 +2392,7 @@ Buscá un cliente o un vehículo.
 
 <div class="datos-seleccionados">
 
-<h3>🚗 Datos del vehículo</h3>
+<h3><span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Datos del vehículo</h3>
 
 <div class="datos-grid">
 
@@ -1876,7 +2454,7 @@ Buscá un cliente o un vehículo.
 
 <div class="or-seccion">
 
-<h3>🗣️ Voz del cliente / Motivo de ingreso</h3>
+<h3><span class="ui-icon icon-voice" aria-hidden="true"></span> Voz del cliente / Motivo de ingreso</h3>
 
 <p class="or-ayuda">
 Las preguntas son una ayuda de memoria. Al comenzar a escribir desaparecen.
@@ -1925,7 +2503,7 @@ onclick="activarPregunta(this)">
 
 <div class="or-seccion">
 
-<h3>🔧 Estado del vehículo al ingreso</h3>
+<h3><span class="ui-icon icon-tools" aria-hidden="true"></span> Estado del vehículo al ingreso</h3>
 
 <p class="or-ayuda">
 Hacé clic sobre la parte del vehículo que quieras registrar.
@@ -1971,7 +2549,7 @@ Estado
 <div class="auto-area">
 
 <div class="auto-titulo">
-🚗 Hacé clic sobre la parte del vehículo
+<span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Hacé clic sobre la parte del vehículo
 </div>
 
 <div class="diagrama-contenedor">
@@ -2103,7 +2681,7 @@ title="Óptica trasera derecha"></div>
 <div class="combustible-panel">
 
 <div class="panel-titulo">
-⛽ Nivel de combustible
+<span class="ui-icon icon-fuel" aria-hidden="true"></span> Nivel de combustible
 </div>
 
 <div class="combustible">
@@ -2164,7 +2742,7 @@ onclick="seleccionarCombustible('1',90,this)">
 <div class="danos-registrados">
 
 <div class="panel-titulo">
-📋 Daños registrados
+<span class="ui-icon icon-damage" aria-hidden="true"></span> Daños registrados
 </div>
 
 <div id="listaDanos">
@@ -2183,7 +2761,7 @@ Todavía no hay daños registrados.
 <div class="elementos">
 
 <h3>
-🧰 Elementos que acompañan al vehículo
+<span class="ui-icon icon-kit" aria-hidden="true"></span> Elementos que acompañan al vehículo
 </h3>
 
 <div class="elementos-grid">
@@ -2207,7 +2785,7 @@ Todavía no hay daños registrados.
 <div class="or-seccion">
 
 <h3>
-📝 Observaciones del estado
+<span class="ui-icon icon-note" aria-hidden="true"></span> Observaciones del estado
 </h3>
 
 <div class="campo">
@@ -2231,7 +2809,7 @@ placeholder="Observaciones adicionales del estado del vehículo...">
 <div class="or-seccion">
 
 <h3>
-📝 Observaciones generales de la OR
+<span class="ui-icon icon-note" aria-hidden="true"></span> Observaciones generales de la OR
 </h3>
 
 <div class="campo">
@@ -2252,13 +2830,13 @@ placeholder="Observaciones adicionales de la orden de reparación...">
 <button
 class="btn btn-primary"
 onclick="guardarOR()">
-💾 Crear Orden de Reparación
+<span class="ui-icon icon-save" aria-hidden="true"></span>Crear Orden de Reparación
 </button>
 
 <button
 class="btn btn-secondary"
 onclick="mostrarOrdenes()">
-← Volver
+<span class="ui-icon icon-back" aria-hidden="true"></span>Volver
 </button>
 
 </div>
@@ -2276,48 +2854,48 @@ onclick="mostrarOrdenes()">
 
 <div class="busqueda">
 
-<h2>🔎 Buscar orden de reparación</h2>
+<h2><span class="ui-icon icon-search" aria-hidden="true"></span> Buscar orden de reparación</h2>
 
 <div class="busquedas-individuales">
 
 <div class="busqueda-campo">
 
-<h3>🔢 N.º de OR</h3>
+<h3><span class="ui-icon icon-ordenes" aria-hidden="true"></span> N.º de OR</h3>
 
 <input id="buscarNumeroOR"
 placeholder="Ej: OR-000001">
 
 <button class="btn btn-buscar"
 onclick="buscarORPorNumero()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
 
 <div class="busqueda-campo">
 
-<h3>🚗 Patente</h3>
+<h3><span class="ui-icon icon-vehiculos" aria-hidden="true"></span> Patente</h3>
 
 <input id="buscarOrdenPatente"
 placeholder="Patente">
 
 <button class="btn btn-buscar"
 onclick="buscarORPorPatente()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
 
 <div class="busqueda-campo">
 
-<h3>👤 Apellido</h3>
+<h3><span class="ui-icon icon-clientes" aria-hidden="true"></span> Apellido</h3>
 
 <input id="buscarOrdenApellido"
 placeholder="Apellido">
 
 <button class="btn btn-buscar"
 onclick="buscarORPorApellido()">
-🔎 Buscar
+<span class="ui-icon icon-search" aria-hidden="true"></span>Buscar
 </button>
 
 </div>
@@ -2348,7 +2926,7 @@ class="modal-fondo">
 <div class="modal">
 
 <h2>
-🔧 Registrar estado
+<span class="ui-icon icon-tools" aria-hidden="true"></span>Registrar estado
 </h2>
 
 <p>
@@ -2406,7 +2984,7 @@ Cancelar
 <button
 class="btn btn-primary"
 onclick="confirmarDano()">
-✓ Confirmar
+<span class="ui-icon icon-confirm" aria-hidden="true"></span>Confirmar
 </button>
 
 </div>
@@ -2742,6 +3320,7 @@ function ordenVehiculo(orden){
 function accionesRegistro(html, acciones){
     const accionesHtml=acciones.map(accion=>
         "<button class='btn btn-secondary' onclick=\""+accion.onclick+"\">"+
+        "<span class='ui-icon icon-"+accion.icon+"' aria-hidden='true'></span>"+
         accion.texto+
         "</button>"
     ).join("");
@@ -2772,9 +3351,9 @@ function mostrarFichaCliente(id){
             "<div class='resultado-item' onclick=\"mostrarFichaOR('"+orden.numero+"')\">"+orden.numero+" - "+orden.estado+"</div>").join("") : "<p>No tiene órdenes asociadas.</p>");
 
     contenedor.innerHTML=accionesRegistro(html,[
-        {texto:"✏️ Editar",onclick:"editarCliente('"+cliente.id+"')"},
-        {texto:"🗑️ Eliminar",onclick:"eliminarCliente('"+cliente.id+"')"},
-        {texto:"← Volver",onclick:"buscarCliente()"}
+        {icon:"edit",texto:"Editar",onclick:"editarCliente('"+cliente.id+"')"},
+        {icon:"delete",texto:"Eliminar",onclick:"eliminarCliente('"+cliente.id+"')"},
+        {icon:"back",texto:"Volver",onclick:"buscarCliente()"}
     ]);
 }
 
@@ -2799,10 +3378,10 @@ function mostrarFichaVehiculo(id){
         (ordenesVehiculo.length ? ordenesVehiculo.map(orden=>
             "<div class='resultado-item' onclick=\"mostrarFichaOR('"+orden.numero+"')\">"+orden.numero+" - "+orden.estado+"</div>").join("") : "<p>No tiene órdenes asociadas.</p>");
     contenedor.innerHTML=accionesRegistro(html,[
-        {texto:"👤 Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
-        {texto:"✏️ Editar",onclick:"editarVehiculo('"+vehiculo.id+"')"},
-        {texto:"🗑️ Eliminar",onclick:"eliminarVehiculo('"+vehiculo.id+"')"},
-        {texto:"← Volver",onclick:"buscarVehiculo()"}
+        {icon:"clientes",texto:"Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
+        {icon:"edit",texto:"Editar",onclick:"editarVehiculo('"+vehiculo.id+"')"},
+        {icon:"delete",texto:"Eliminar",onclick:"eliminarVehiculo('"+vehiculo.id+"')"},
+        {icon:"back",texto:"Volver",onclick:"buscarVehiculo()"}
     ]);
 }
 
@@ -2822,11 +3401,11 @@ function mostrarFichaOR(numero){
         "<p><strong>Elementos:</strong> "+((orden.elementos||[]).join(", ")||"-")+"</p>"+
         "<p><strong>Observaciones:</strong> "+(orden.observacionesEstado||"-")+"<br>"+(orden.observaciones||"-")+"</p>";
     contenedor.innerHTML=accionesRegistro(html,[
-        {texto:"👤 Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
-        {texto:"🚗 Ver vehículo",onclick:vehiculo?"mostrarFichaVehiculo('"+vehiculo.id+"')":"alert('Vehículo no encontrado')"},
-        {texto:"✏️ Editar",onclick:"editarOR('"+orden.numero+"')"},
-        {texto:"🗑️ Eliminar",onclick:"eliminarOR('"+orden.numero+"')"},
-        {texto:"← Volver",onclick:"buscarOrden()"}
+        {icon:"clientes",texto:"Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
+        {icon:"vehiculos",texto:"Ver vehículo",onclick:vehiculo?"mostrarFichaVehiculo('"+vehiculo.id+"')":"alert('Vehículo no encontrado')"},
+        {icon:"edit",texto:"Editar",onclick:"editarOR('"+orden.numero+"')"},
+        {icon:"delete",texto:"Eliminar",onclick:"eliminarOR('"+orden.numero+"')"},
+        {icon:"back",texto:"Volver",onclick:"buscarOrden()"}
     ]);
 }
 
@@ -3059,7 +3638,7 @@ r.cliente.nombre+
 "</strong>"+
 "<br>DNI: "+r.cliente.dni+
 "<br>📞 "+(r.cliente.telefono||"-")+
-"<br>🚗 "+r.vehiculo.marca+
+"<br><span class='ui-icon icon-vehiculos' aria-hidden='true'></span> "+r.vehiculo.marca+
 " "+r.vehiculo.modelo+
 " — "+r.vehiculo.patente;
 
@@ -3985,7 +4564,7 @@ dano.tipo+
 "<button class='dano-eliminar' "+
 "onclick='eliminarDano("+
 dano.id+
-")'>🗑️</button>";
+")'><span class='ui-icon icon-delete' aria-hidden='true'></span></button>";
 
 lista.appendChild(div);
 
@@ -4424,11 +5003,11 @@ div.innerHTML=
 "<strong>"+
 o.numero+
 "</strong>"+
-"<br>👤 "+
+"<br><span class='ui-icon icon-clientes' aria-hidden='true'></span> "+
 nombreCliente+
-"<br>🚗 "+
+"<br><span class='ui-icon icon-vehiculos' aria-hidden='true'></span> "+
 datosVehiculo+
-"<br>📅 "+
+"<br><span class='ui-icon icon-calendar' aria-hidden='true'></span> "+
 o.fecha+
 "<br>Estado: "+
 o.estado;
@@ -4510,3 +5089,6 @@ o.estado!=="Cancelado"
 mostrarInicio();
 
 </script>
+
+</body>
+</html>
