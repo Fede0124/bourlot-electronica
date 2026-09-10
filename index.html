@@ -2961,20 +2961,28 @@ function eliminarOR(numero){
    BUSQUEDA CLIENTES
 ========================= */
 
+function normalizarTexto(valor){
+    return String(valor||"")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .trim()
+    .toLowerCase();
+}
+
 function buscarPorApellido(){
 
 const texto=
 document.getElementById("buscarApellido")
-.value.trim().toLowerCase();
+.value;
 
-if(!texto){
+if(!normalizarTexto(texto)){
 alert("Ingresá un apellido.");
 return;
 }
 
 mostrarResultadosClientes(
 clientes.filter(c=>
-c.apellido.toLowerCase().includes(texto)
+normalizarTexto(c.apellido).includes(normalizarTexto(texto))
 )
 );
 
@@ -2985,16 +2993,16 @@ function buscarPorNombre(){
 
 const texto=
 document.getElementById("buscarNombre")
-.value.trim().toLowerCase();
+.value;
 
-if(!texto){
+if(!normalizarTexto(texto)){
 alert("Ingresá un nombre.");
 return;
 }
 
 mostrarResultadosClientes(
 clientes.filter(c=>
-c.nombre.toLowerCase().includes(texto)
+normalizarTexto(c.nombre).includes(normalizarTexto(texto))
 )
 );
 
@@ -3005,9 +3013,9 @@ function buscarPorPatente(){
 
 const texto=
 document.getElementById("buscarPatente")
-.value.trim().toLowerCase();
+.value;
 
-if(!texto){
+if(!normalizarTexto(texto)){
 alert("Ingresá una patente.");
 return;
 }
@@ -3016,10 +3024,10 @@ const resultados=[];
 
 vehiculos.forEach(v=>{
 
-if(v.patente.toLowerCase().includes(texto)){
+if(normalizarTexto(v.patente).includes(normalizarTexto(texto))){
 
 const cliente=
-clientes.find(c=>c.id===v.clienteId);
+clientePorId(v.clienteId||v.clienteNumero);
 
 if(cliente){
 
