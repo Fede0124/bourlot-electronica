@@ -2452,33 +2452,37 @@ function guardarEnGoogleSheets(tipo, accion, id, datos){
     });
 }
 
-function cargarDatos(){
+function leerDatosLocales(key){
     try{
-        clientes=JSON.parse(localStorage.getItem(CLIENTES_STORAGE_KEY)||"[]");
-        vehiculos=JSON.parse(localStorage.getItem(VEHICULOS_STORAGE_KEY)||"[]");
-        ordenes=JSON.parse(localStorage.getItem(ORDENES_STORAGE_KEY)||"[]");
-        vehiculos.forEach(vehiculo=>{
-            if(!vehiculo.clienteId && vehiculo.clienteNumero){
-                const cliente=clientes.find(item=>item.numeroCliente===vehiculo.clienteNumero);
-                if(cliente){ vehiculo.clienteId=cliente.id; }
-            }
-        });
-        ordenes.forEach(orden=>{
-            if(!orden.clienteId && orden.numeroCliente){
-                const cliente=clientes.find(item=>item.numeroCliente===orden.numeroCliente);
-                if(cliente){ orden.clienteId=cliente.id; }
-            }
-            if(!orden.vehiculoId && orden.numeroVehiculo){
-                const vehiculo=vehiculos.find(item=>item.numeroVehiculo===orden.numeroVehiculo);
-                if(vehiculo){ orden.vehiculoId=vehiculo.id; }
-            }
-        });
+        const datos=JSON.parse(localStorage.getItem(key)||"[]");
+        return Array.isArray(datos) ? datos : [];
     }catch(error){
-        console.error("No se pudieron cargar los datos:", error);
-        clientes=[];
-        vehiculos=[];
-        ordenes=[];
+        console.error("No se pudieron cargar los datos de "+key+":", error);
+        return [];
     }
+}
+
+function cargarDatos(){
+    clientes=leerDatosLocales(CLIENTES_STORAGE_KEY);
+    vehiculos=leerDatosLocales(VEHICULOS_STORAGE_KEY);
+    ordenes=leerDatosLocales(ORDENES_STORAGE_KEY);
+
+    vehiculos.forEach(vehiculo=>{
+        if(!vehiculo.clienteId && vehiculo.clienteNumero){
+            const cliente=clientes.find(item=>item.numeroCliente===vehiculo.clienteNumero);
+            if(cliente){ vehiculo.clienteId=cliente.id; }
+        }
+    });
+    ordenes.forEach(orden=>{
+        if(!orden.clienteId && orden.numeroCliente){
+            const cliente=clientes.find(item=>item.numeroCliente===orden.numeroCliente);
+            if(cliente){ orden.clienteId=cliente.id; }
+        }
+        if(!orden.vehiculoId && orden.numeroVehiculo){
+            const vehiculo=vehiculos.find(item=>item.numeroVehiculo===orden.numeroVehiculo);
+            if(vehiculo){ orden.vehiculoId=vehiculo.id; }
+        }
+    });
 }
 
 function guardarClientesLocalmente(){
