@@ -2971,6 +2971,8 @@ function normalizarTexto(valor){
 
 function buscarPorApellido(){
 
+cargarDatos();
+
 const texto=
 document.getElementById("buscarApellido")
 .value;
@@ -2991,6 +2993,8 @@ normalizarTexto(c.apellido).includes(normalizarTexto(texto))
 
 function buscarPorNombre(){
 
+cargarDatos();
+
 const texto=
 document.getElementById("buscarNombre")
 .value;
@@ -3010,6 +3014,8 @@ normalizarTexto(c.nombre).includes(normalizarTexto(texto))
 
 
 function buscarPorPatente(){
+
+cargarDatos();
 
 const texto=
 document.getElementById("buscarPatente")
