@@ -1206,6 +1206,141 @@ select{
 
 }
 
+/* =========================
+   IMPRESION OR
+========================= */
+
+#hojaImpresionOR{
+    display:none;
+}
+
+.pagina-impresion{
+    width:210mm;
+    min-height:297mm;
+    box-sizing:border-box;
+    padding:14mm;
+    background:#ffffff;
+    color:#111111;
+    font-family:Arial,Helvetica,sans-serif;
+    page-break-after:always;
+}
+
+.pagina-impresion:last-child{
+    page-break-after:auto;
+}
+
+.impresion-copia{
+    text-align:right;
+    font-weight:bold;
+    letter-spacing:1px;
+    color:#374151;
+    margin-bottom:8px;
+}
+
+.impresion-encabezado{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border-bottom:2px solid #111111;
+    padding-bottom:12px;
+    margin-bottom:14px;
+}
+
+.impresion-encabezado img{
+    max-height:70px;
+    max-width:220px;
+    object-fit:contain;
+}
+
+.impresion-encabezado h1{
+    font-size:18px;
+    margin:0;
+}
+
+.impresion-encabezado h2{
+    font-size:14px;
+    margin:2px 0 0;
+    color:#374151;
+}
+
+.impresion-numero{
+    font-size:15px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.impresion-seccion{
+    margin-top:14px;
+}
+
+.impresion-seccion h3{
+    font-size:13px;
+    text-transform:uppercase;
+    border-bottom:1px solid #9ca3af;
+    padding-bottom:3px;
+    margin-bottom:6px;
+    color:#111111;
+}
+
+.impresion-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4px 20px;
+    font-size:12px;
+}
+
+.impresion-lista{
+    font-size:12px;
+    margin:0;
+    padding-left:18px;
+}
+
+.impresion-checklist{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 18px;
+    font-size:12px;
+}
+
+.impresion-firmas{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-top:34px;
+}
+
+.impresion-firma{
+    text-align:center;
+    font-size:12px;
+}
+
+.impresion-firma .linea{
+    border-top:1px solid #111111;
+    margin-top:40px;
+    padding-top:4px;
+}
+
+.impresion-leyenda{
+    margin-top:14px;
+    font-size:11px;
+    color:#374151;
+}
+
+@media print{
+    body > *:not(#hojaImpresionOR){
+        display:none !important;
+    }
+
+    #hojaImpresionOR{
+        display:block !important;
+    }
+
+    @page{
+        size:A4;
+        margin:0;
+    }
+}
+
 </style>
 </head>
 
@@ -2429,6 +2564,13 @@ Los resultados aparecerán acá.
 
 
 <!-- =========================
+     IMPRESION OR
+========================= -->
+
+<div id="hojaImpresionOR"></div>
+
+
+<!-- =========================
      MODAL DAÑO
 ========================= -->
 
@@ -2988,10 +3130,182 @@ function mostrarFichaOR(numero){
     contenedor.innerHTML=accionesRegistro(html,[
         {texto:"👤 Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
         {texto:"🚗 Ver vehículo",onclick:vehiculo?"mostrarFichaVehiculo('"+vehiculo.id+"')":"alert('Vehículo no encontrado')"},
+        {texto:"🖨️ Generar PDF / Imprimir",onclick:"generarPDFOrden('"+orden.numero+"')"},
         {texto:"✏️ Editar",onclick:"editarOR('"+orden.numero+"')"},
         {texto:"🗑️ Eliminar",onclick:"eliminarOR('"+orden.numero+"')"},
         {texto:"← Volver",onclick:"buscarOrden()"}
     ]);
+}
+
+/* =========================
+   PDF / IMPRESION OR
+========================= */
+
+function escaparHtmlImpresionOR(texto){
+    return String(texto==null?"":texto)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+}
+
+function generarPDFOrden(numero){
+    const orden=ordenes.find(item=>item.numero===numero);
+
+    if(!orden){
+        alert("No se encontró la OR para generar el PDF.");
+        return;
+    }
+
+    const cliente=ordenCliente(orden)||{};
+    const vehiculo=ordenVehiculo(orden)||{};
+    const contenedor=document.getElementById("hojaImpresionOR");
+
+    contenedor.innerHTML=
+        construirCopiaImpresionOR(orden,cliente,vehiculo,"COPIA CLIENTE")+
+        construirCopiaImpresionOR(orden,cliente,vehiculo,"COPIA TALLER");
+
+    window.print();
+}
+
+function construirCopiaImpresionOR(orden,cliente,vehiculo,tituloCopia){
+    const preguntasVoz=[
+        "¿Cuándo empezó la falla?",
+        "¿Qué síntomas presenta?",
+        "¿En qué condiciones aparece?",
+        "¿Qué trabajo le hicieron anteriormente?",
+        "¿Se cambió alguna pieza recientemente?"
+    ];
+
+    const respuestasVoz=String(orden.vozCliente||"")
+        .split("\n")
+        .map(linea=>linea.trim())
+        .filter(linea=>linea.length>0);
+
+    const preguntasHtml=preguntasVoz.map((pregunta,indice)=>
+        "<p><strong>"+(indice+1)+". "+pregunta+"</strong><br>"+
+        (respuestasVoz[indice] ? escaparHtmlImpresionOR(respuestasVoz[indice]) : "-")+
+        "</p>"
+    ).join("");
+
+    const danos=Array.isArray(orden.danos)?orden.danos:[];
+    const danosHtml=danos.length
+        ? "<ul class='impresion-lista'>"+danos.map(dano=>
+            "<li>"+escaparHtmlImpresionOR(dano.parte||"-")+" — "+
+            escaparHtmlImpresionOR(dano.tipo||"-")+
+            (dano.detalle ? " — detalle: "+escaparHtmlImpresionOR(dano.detalle) : "")+
+            "</li>"
+        ).join("")+"</ul>"
+        : "<p>Sin daños registrados.</p>";
+
+    const nivelesCombustible=["0","1/4","1/2","3/4","1"];
+    const combustibleHtml=nivelesCombustible.map(nivel=>
+        "<span>"+(orden.combustible===nivel?"☑":"☐")+" "+nivel+"</span>"
+    ).join("");
+
+    const elementosDisponibles=[
+        "Rueda de auxilio","Crique","Llave de rueda","Manual",
+        "Matafuego","Balizas","Chaleco","Documentación"
+    ];
+    const elementosOrden=Array.isArray(orden.elementos)?orden.elementos:[];
+    const elementosHtml=elementosDisponibles.map(elemento=>
+        "<span>"+(elementosOrden.includes(elemento)?"☑":"☐")+" "+elemento+"</span>"
+    ).join("");
+
+    const nombreCliente=(cliente.nombre||orden.clienteNombre||"-")+" "+(cliente.apellido||orden.clienteApellido||"");
+
+    return (
+        "<div class='pagina-impresion'>"+
+        "<div class='impresion-copia'>"+tituloCopia+"</div>"+
+        "<div class='impresion-encabezado'>"+
+        "<img src='logo-bourlot.png' alt='Bourlot Electrónica Automotriz'>"+
+        "<div>"+
+        "<h1>BOURLOT ELECTRÓNICA AUTOMOTRIZ</h1>"+
+        "<h2>ORDEN DE REPARACIÓN</h2>"+
+        "<div class='impresion-numero'>N.º de OR: "+escaparHtmlImpresionOR(orden.numero)+"</div>"+
+        "<div>Fecha de ingreso: "+escaparHtmlImpresionOR(orden.fecha||"-")+"</div>"+
+        "</div>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Datos del cliente</h3>"+
+        "<div class='impresion-grid'>"+
+        "<div>Nombre y apellido: "+escaparHtmlImpresionOR(nombreCliente)+"</div>"+
+        "<div>DNI/CUIT: "+escaparHtmlImpresionOR(cliente.dni||orden.clienteDni||"-")+"</div>"+
+        "<div>Teléfono: "+escaparHtmlImpresionOR(cliente.telefono||orden.clienteTelefono||"-")+"</div>"+
+        "<div>Email: "+escaparHtmlImpresionOR(cliente.email||"-")+"</div>"+
+        "<div>Dirección: "+escaparHtmlImpresionOR(cliente.direccion||"-")+"</div>"+
+        "<div>Localidad: "+escaparHtmlImpresionOR(cliente.localidad||"-")+"</div>"+
+        "<div>Provincia: "+escaparHtmlImpresionOR(cliente.provincia||"-")+"</div>"+
+        "</div>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Datos del vehículo</h3>"+
+        "<div class='impresion-grid'>"+
+        "<div>Patente: "+escaparHtmlImpresionOR(vehiculo.patente||orden.patente||"-")+"</div>"+
+        "<div>Marca: "+escaparHtmlImpresionOR(vehiculo.marca||orden.marca||"-")+"</div>"+
+        "<div>Modelo: "+escaparHtmlImpresionOR(vehiculo.modelo||orden.modelo||"-")+"</div>"+
+        "<div>Año: "+escaparHtmlImpresionOR(vehiculo.anio||orden.anio||"-")+"</div>"+
+        "<div>Color: "+escaparHtmlImpresionOR(vehiculo.color||"-")+"</div>"+
+        "<div>Kilometraje: "+escaparHtmlImpresionOR(vehiculo.kilometraje||orden.kilometraje||"-")+"</div>"+
+        "<div>Motor: "+escaparHtmlImpresionOR(vehiculo.motor||orden.motor||"-")+"</div>"+
+        "<div>VIN / Chasis: "+escaparHtmlImpresionOR(vehiculo.vin||"-")+"</div>"+
+        "</div>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Motivo de ingreso / Voz del cliente</h3>"+
+        "<p>"+(escaparHtmlImpresionOR(orden.vozCliente||"-").replace(/\n/g,"<br>"))+"</p>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Preguntas de ayuda</h3>"+
+        preguntasHtml+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Estado del vehículo al ingreso</h3>"+
+        danosHtml+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Combustible</h3>"+
+        "<div class='impresion-checklist'>"+combustibleHtml+"</div>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Elementos entregados</h3>"+
+        "<div class='impresion-checklist'>"+elementosHtml+"</div>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Observaciones</h3>"+
+        "<p><strong>Del estado:</strong> "+escaparHtmlImpresionOR(orden.observacionesEstado||"-")+"</p>"+
+        "<p><strong>Generales:</strong> "+escaparHtmlImpresionOR(orden.observaciones||"-")+"</p>"+
+        "</div>"+
+
+        "<div class='impresion-seccion'>"+
+        "<h3>Estado de la OR</h3>"+
+        "<p>"+escaparHtmlImpresionOR(orden.estado||"-")+"</p>"+
+        "</div>"+
+
+        "<div class='impresion-firmas'>"+
+        "<div class='impresion-firma'>"+
+        "<div class='linea'>Firma del cliente</div>"+
+        "<div>Aclaración: ______________________</div>"+
+        "</div>"+
+        "<div class='impresion-firma'>"+
+        "<div class='linea'>Firma del taller</div>"+
+        "<div>Aclaración: ______________________</div>"+
+        "</div>"+
+        "</div>"+
+
+        "<div class='impresion-leyenda'>"+
+        "El cliente declara haber entregado el vehículo y los elementos indicados en esta Orden de Reparación."+
+        "</div>"+
+
+        "</div>"
+    );
 }
 
 function editarCliente(id){
@@ -4594,7 +4908,9 @@ alert(
 
 actualizarDashboard();
 
-mostrarOrdenes();
+buscarOrden();
+
+mostrarFichaOR(numero);
 
 }
 
