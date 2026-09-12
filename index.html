@@ -1264,13 +1264,12 @@ onclick="mostrarOrdenes()">
 
 <div class="user">
 👤 Administrador
-</div>
+ </div>
 
 </div>
-
 
 <!-- =========================
-     INICIO
+    INICIO
 ========================= -->
 
 <div id="inicio">
@@ -1357,25 +1356,29 @@ onclick="buscarCliente()">
 
 <div id="nuevoCliente">
 
-<div class="ordenes-panel-acciones">
+<div class="formulario">
 
-<button class="btn btn-primary"
-onclick="nuevaOrden()">
-➕ Nueva orden
-</button>
+<h2>➕ Nuevo cliente</h2>
+
 <div class="form-grid">
-<button class="btn btn-secondary"
-onclick="buscarOrden()">
-🔎 Buscar orden
-</button>
+
 <div class="campo">
-<span id="estadoCargaOrdenes" class="ordenes-estado-carga"></span>
+<label>Nombre</label>
+<input id="clienteNombre">
+</div>
+
+<div class="campo">
+<label>Apellido</label>
+<input id="clienteApellido">
+</div>
+
+<div class="campo">
+<label>CUIT / DNI</label>
+<input id="clienteDni">
+</div>
+
 <div class="campo">
 <label>Teléfono</label>
-
-<div id="ordenesAbiertas" class="resultados">
-Las órdenes abiertas aparecerán acá.
-</div>
 <input id="clienteTelefono">
 </div>
 
@@ -1773,34 +1776,24 @@ Los resultados aparecerán acá.
 
 <div id="ordenes">
 
-<div class="ordenes-opciones">
+<div class="ordenes-panel-acciones">
 
-<div class="orden-opcion"
+<button class="btn btn-primary"
 onclick="nuevaOrden()">
+➕ Nueva orden
+</button>
 
-<div class="icon">➕</div>
-
-<h2>Nueva orden de reparación</h2>
-
-<p>
-Crear una OR cuando ingresa un vehículo al taller.
-</p>
-
-</div>
-
-<div class="orden-opcion"
+<button class="btn btn-secondary"
 onclick="buscarOrden()">
+🔎 Buscar orden
+</button>
 
-<div class="icon">🔎</div>
-
-<h2>Buscar orden</h2>
-
-<p>
-Buscar por número de OR, patente o apellido.
-</p>
+<span id="estadoCargaOrdenes" class="ordenes-estado-carga"></span>
 
 </div>
 
+<div id="ordenesAbiertas" class="resultados">
+Las órdenes abiertas aparecerán acá.
 </div>
 
 </div>
