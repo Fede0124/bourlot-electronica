@@ -2503,10 +2503,78 @@ function leerDatosLocales(key){
 }
 
 function cargarDatos(){
+    if(datosRemotosCargados){
+        return;
+    }
+
     clientes=leerDatosLocales(CLIENTES_STORAGE_KEY);
     vehiculos=leerDatosLocales(VEHICULOS_STORAGE_KEY);
     ordenes=leerDatosLocales(ORDENES_STORAGE_KEY);
 
+    vehiculos.forEach(vehiculo=>{
+        if(!vehiculo.clienteId && vehiculo.clienteNumero){
+            const cliente=clientes.find(item=>item.numeroCliente===vehiculo.clienteNumero);
+            if(cliente){ vehiculo.clienteId=cliente.id; }
+        }
+    });
+    ordenes.forEach(orden=>{
+        if(!orden.clienteId && orden.numeroCliente){
+            const cliente=clientes.find(item=>item.numeroCliente===orden.numeroCliente);
+            if(cliente){ orden.clienteId=cliente.id; }
+        }
+        if(!orden.vehiculoId && orden.numeroVehiculo){
+            const vehiculo=vehiculos.find(item=>item.numeroVehiculo===orden.numeroVehiculo);
+            if(vehiculo){ orden.vehiculoId=vehiculo.id; }
+        }
+    });
+}
+
+async function leerDatosDesdeGoogleSheets(tipo){
+    const respuesta=await fetch(
+        GOOGLE_SHEETS_URL+"?tipo="+encodeURIComponent(tipo),
+        {method:"GET",cache:"no-store"}
+    );
+
+    if(!respuesta.ok){
+        throw new Error("HTTP "+respuesta.status);
+    }
+
+    const resultado=await respuesta.json();
+    if(!resultado || resultado.ok!==true || !Array.isArray(resultado.datos)){
+        throw new Error("Respuesta inválida para "+tipo);
+    }
+
+    return resultado.datos;
+}
+
+async function cargarDatosDesdeGoogleSheets(){
+    const tipos=["clientes","vehiculos","ordenes"];
+    const respuestas=await Promise.allSettled(
+        tipos.map(tipo=>leerDatosDesdeGoogleSheets(tipo))
+    );
+
+    respuestas.forEach((respuesta, indice)=>{
+        if(respuesta.status==="fulfilled"){
+            const datos=respuesta.value;
+            if(indice===0){ clientes=datos; }
+            if(indice===1){ vehiculos=datos; }
+            if(indice===2){ ordenes=datos; }
+        }else{
+            console.error(
+                "No se pudieron cargar "+tipos[indice]+" desde Google Sheets:",
+                respuesta.reason
+            );
+        }
+    });
+
+    datosRemotosCargados=true;
+    relacionarDatos();
+    guardarClientesLocalmente();
+    guardarVehiculosLocalmente();
+    guardarOrdenesLocalmente();
+}
+
+function relacionarDatos(){
     vehiculos.forEach(vehiculo=>{
         if(!vehiculo.clienteId && vehiculo.clienteNumero){
             const cliente=clientes.find(item=>item.numeroCliente===vehiculo.clienteNumero);
@@ -2578,8 +2646,10 @@ function proximoNumeroOR(){
 let clientes=[];
 let vehiculos=[];
 let ordenes=[];
+let datosRemotosCargados=false;
 
 cargarDatos();
+cargarDatosDesdeGoogleSheets();
 
 let clienteVehiculoSeleccionado=null;
 let clienteORSeleccionado=null;
