@@ -60,7 +60,9 @@ function leerRegistros(tipo) {
     turnos: "Turnos",
     presupuestos: "Presupuestos",
     stock: "Stock",
-    caja: "Caja"
+    caja: "Caja",
+    diagnosticos: "Diagnósticos",
+    repuestosor: "RepuestosOR"
   };
 
   const nombre = nombres[tipo];
@@ -115,7 +117,9 @@ function obtenerHoja(ss, tipo) {
     turnos: "Turnos",
     presupuestos: "Presupuestos",
     stock: "Stock",
-    caja: "Caja"
+    caja: "Caja",
+    diagnosticos: "Diagnósticos",
+    repuestosor: "RepuestosOR"
 
   };
 

@@ -428,7 +428,7 @@ select{
 
 .orden-abierta{
     display:grid;
-    grid-template-columns:130px minmax(150px,1fr) 110px minmax(160px,1fr) 170px 90px 145px;
+    grid-template-columns:120px minmax(160px,1.2fr) 100px minmax(160px,1.2fr) 150px 80px minmax(150px,1fr);
     align-items:center;
     gap:14px;
 }
@@ -1354,6 +1354,10 @@ select{
         size:A4;
         margin:0;
     }
+}
+
+.tab-or-trabajo{
+    padding:10px 18px;
 }
 
 </style>
@@ -2573,6 +2577,59 @@ Los resultados aparecerán acá.
 
 </div>
 
+
+<!-- =========================
+     ESPACIO DE TRABAJO OR
+========================= -->
+
+<div id="ordenTrabajo">
+
+<div class="formulario">
+
+<div class="botones" style="margin-bottom:20px;">
+<button class="btn btn-secondary" onclick="volverAOrdenes()">← Volver a órdenes</button>
+</div>
+
+<div class="or-numero">
+<div>Orden de reparación</div>
+<strong id="trabajoNumeroOR">-</strong>
+</div>
+
+<div class="datos-seleccionados">
+<div class="datos-grid">
+<div class="dato"><span>Cliente</span><strong id="trabajoCliente">-</strong></div>
+<div class="dato"><span>Vehículo</span><strong id="trabajoVehiculo">-</strong></div>
+<div class="dato"><span>Patente</span><strong id="trabajoPatente">-</strong></div>
+<div class="dato"><span>Estado</span><strong id="trabajoEstado">-</strong></div>
+</div>
+</div>
+
+<div class="ordenes-panel-acciones" style="margin-top:20px;">
+<button id="tabORDatos" class="btn btn-primary tab-or-trabajo" onclick="mostrarPestanaOR('datos')">Ver datos</button>
+<button id="tabORDiagnostico" class="btn btn-secondary tab-or-trabajo" onclick="mostrarPestanaOR('diagnostico')">Diagnóstico</button>
+<button id="tabORRepuestos" class="btn btn-secondary tab-or-trabajo" onclick="mostrarPestanaOR('repuestos')">Repuestos / Consumibles</button>
+</div>
+
+<div id="pestanaDatosOR" class="or-seccion"></div>
+
+<div id="pestanaDiagnosticoOR" class="or-seccion" style="display:none;">
+<div class="botones">
+<button class="btn btn-primary" onclick="agregarDiagnostico()">+ Agregar diagnóstico</button>
+</div>
+<div id="listaDiagnosticos" class="resultados" style="margin-top:15px;"></div>
+</div>
+
+<div id="pestanaRepuestosOR" class="or-seccion" style="display:none;">
+<div class="botones">
+<button class="btn btn-primary" onclick="agregarRepuestoOR()">+ Agregar repuesto</button>
+</div>
+<div id="listaRepuestosOR" class="resultados" style="margin-top:15px;"></div>
+</div>
+
+</div>
+
+</div>
+
 </main>
 
 </div>
@@ -2678,6 +2735,8 @@ const VEHICULOS_STORAGE_KEY = "bourlot_vehiculos";
 const VEHICULOS_CONTADOR_KEY = "bourlot_vehiculos_contador";
 const ORDENES_STORAGE_KEY = "bourlot_ordenes";
 const ORDENES_CONTADOR_KEY = "bourlot_ordenes_contador";
+const DIAGNOSTICOS_STORAGE_KEY = "bourlot_diagnosticos";
+const REPUESTOS_OR_STORAGE_KEY = "bourlot_repuestos_or";
 
 function guardarEnGoogleSheets(tipo, accion, id, datos){
     return fetch(GOOGLE_SHEETS_URL, {
@@ -2713,6 +2772,8 @@ function cargarDatos(){
     clientes=leerDatosLocales(CLIENTES_STORAGE_KEY);
     vehiculos=leerDatosLocales(VEHICULOS_STORAGE_KEY);
     ordenes=leerDatosLocales(ORDENES_STORAGE_KEY);
+    diagnosticos=leerDatosLocales(DIAGNOSTICOS_STORAGE_KEY);
+    repuestosOR=leerDatosLocales(REPUESTOS_OR_STORAGE_KEY);
 
     vehiculos.forEach(vehiculo=>{
         if(!vehiculo.clienteId && vehiculo.clienteNumero){
@@ -2751,7 +2812,7 @@ async function leerDatosDesdeGoogleSheets(tipo){
 }
 
 async function cargarDatosDesdeGoogleSheets(){
-    const tipos=["clientes","vehiculos","ordenes"];
+    const tipos=["clientes","vehiculos","ordenes","diagnosticos","repuestosor"];
     const respuestas=await Promise.allSettled(
         tipos.map(tipo=>leerDatosDesdeGoogleSheets(tipo))
     );
@@ -2762,6 +2823,8 @@ async function cargarDatosDesdeGoogleSheets(){
             if(indice===0){ clientes=datos; }
             if(indice===1){ vehiculos=datos; }
             if(indice===2){ ordenes=datos; }
+            if(indice===3){ diagnosticos=datos; }
+            if(indice===4){ repuestosOR=datos; }
         }else{
             console.error(
                 "No se pudieron cargar "+tipos[indice]+" desde Google Sheets:",
@@ -2775,6 +2838,8 @@ async function cargarDatosDesdeGoogleSheets(){
     guardarClientesLocalmente();
     guardarVehiculosLocalmente();
     guardarOrdenesLocalmente();
+    guardarDiagnosticosLocalmente();
+    guardarRepuestosOrLocalmente();
 }
 
 function relacionarDatos(){
@@ -2806,6 +2871,14 @@ function guardarVehiculosLocalmente(){
 
 function guardarOrdenesLocalmente(){
     localStorage.setItem(ORDENES_STORAGE_KEY, JSON.stringify(ordenes));
+}
+
+function guardarDiagnosticosLocalmente(){
+    localStorage.setItem(DIAGNOSTICOS_STORAGE_KEY, JSON.stringify(diagnosticos));
+}
+
+function guardarRepuestosOrLocalmente(){
+    localStorage.setItem(REPUESTOS_OR_STORAGE_KEY, JSON.stringify(repuestosOR));
 }
 
 function siguienteNumeroCliente(){
@@ -2849,6 +2922,8 @@ function proximoNumeroOR(){
 let clientes=[];
 let vehiculos=[];
 let ordenes=[];
+let diagnosticos=[];
+let repuestosOR=[];
 let datosRemotosCargados=false;
 
 cargarDatos();
@@ -2880,7 +2955,8 @@ const pantallas=[
 "buscarVehiculo",
 "ordenes",
 "nuevaOrden",
-"buscarOrden"
+"buscarOrden",
+"ordenTrabajo"
 ];
 
 pantallas.forEach(id=>{
@@ -3145,11 +3221,338 @@ function mostrarFichaOR(numero){
     contenedor.innerHTML=accionesRegistro(html,[
         {texto:"👤 Ver cliente",onclick:cliente?"mostrarFichaCliente('"+cliente.id+"')":"alert('Cliente no encontrado')"},
         {texto:"🚗 Ver vehículo",onclick:vehiculo?"mostrarFichaVehiculo('"+vehiculo.id+"')":"alert('Vehículo no encontrado')"},
-        {texto:"🖨️ Generar PDF / Imprimir",onclick:"generarPDFOrden('"+orden.numero+"')"},
+        {texto:"� Ingresar a OR",onclick:"ingresarAOrden('"+orden.numero+"')"},
+        {texto:"�🖨️ Generar PDF / Imprimir",onclick:"generarPDFOrden('"+orden.numero+"')"},
         {texto:"✏️ Editar",onclick:"editarOR('"+orden.numero+"')"},
         {texto:"🗑️ Eliminar",onclick:"eliminarOR('"+orden.numero+"')"},
         {texto:"← Volver",onclick:"buscarOrden()"}
     ]);
+}
+
+/* =========================
+   ESPACIO DE TRABAJO OR
+========================= */
+
+let ordenTrabajoActual=null;
+
+function ingresarAOrden(numero){
+    const orden=ordenes.find(item=>item.numero===numero);
+    if(!orden){ alert("No se encontró la OR."); return; }
+
+    ordenTrabajoActual=numero;
+
+    ocultarPantallas();
+
+    document.getElementById("ordenTrabajo").style.display="block";
+    document.getElementById("titulo").innerText="Orden de reparación";
+    document.getElementById("subtitulo").innerText="Espacio de trabajo de "+numero;
+
+    activarMenu("menuOrdenes");
+
+    const cliente=ordenCliente(orden);
+    const vehiculo=ordenVehiculo(orden);
+
+    document.getElementById("trabajoNumeroOR").innerText=orden.numero;
+    document.getElementById("trabajoCliente").innerText=cliente?(cliente.nombre+" "+cliente.apellido):(orden.clienteNombre||"-");
+    document.getElementById("trabajoVehiculo").innerText=vehiculo?(vehiculo.marca+" "+vehiculo.modelo):((orden.marca||"-")+" "+(orden.modelo||"-"));
+    document.getElementById("trabajoPatente").innerText=(vehiculo&&vehiculo.patente)||orden.patente||"-";
+    document.getElementById("trabajoEstado").innerText=orden.estado||"-";
+
+    mostrarPestanaOR("datos");
+}
+
+function volverAOrdenes(){
+    ordenTrabajoActual=null;
+    mostrarOrdenes();
+}
+
+function mostrarPestanaOR(pestana){
+    const secciones={datos:"pestanaDatosOR",diagnostico:"pestanaDiagnosticoOR",repuestos:"pestanaRepuestosOR"};
+    const pestanas={datos:"tabORDatos",diagnostico:"tabORDiagnostico",repuestos:"tabORRepuestos"};
+
+    Object.keys(secciones).forEach(clave=>{
+        document.getElementById(secciones[clave]).style.display = clave===pestana ? "block" : "none";
+        const boton=document.getElementById(pestanas[clave]);
+        boton.classList.remove("btn-primary");
+        boton.classList.remove("btn-secondary");
+        boton.classList.add(clave===pestana ? "btn-primary" : "btn-secondary");
+    });
+
+    if(pestana==="datos"){ renderizarDatosOR(); }
+    if(pestana==="diagnostico"){ renderizarDiagnosticos(); }
+    if(pestana==="repuestos"){ renderizarRepuestosOR(); }
+}
+
+function renderizarDatosOR(){
+    const contenedor=document.getElementById("pestanaDatosOR");
+    const orden=ordenes.find(item=>item.numero===ordenTrabajoActual);
+
+    if(!orden){
+        contenedor.innerHTML="<p>No se encontró la OR.</p>";
+        return;
+    }
+
+    const cliente=ordenCliente(orden)||{};
+    const vehiculo=ordenVehiculo(orden)||{};
+    const danos=Array.isArray(orden.danos)?orden.danos:[];
+    const danosHtml=danos.length
+        ? "<ul class='impresion-lista' style='color:#e5e7eb;'>"+danos.map(dano=>
+            "<li>"+(dano.parte||"-")+" — "+(dano.tipo||"-")+
+            (dano.detalle ? " — detalle: "+dano.detalle : "")+
+            "</li>"
+        ).join("")+"</ul>"
+        : "<p>Sin daños registrados.</p>";
+    const elementosOrden=Array.isArray(orden.elementos)?orden.elementos:[];
+
+    contenedor.innerHTML=
+        "<h3>Datos del cliente</h3>"+
+        "<div class='datos-grid'>"+
+        "<div class='dato'><span>Nombre</span><strong>"+(cliente.nombre||orden.clienteNombre||"-")+"</strong></div>"+
+        "<div class='dato'><span>Apellido</span><strong>"+(cliente.apellido||orden.clienteApellido||"-")+"</strong></div>"+
+        "<div class='dato'><span>DNI/CUIT</span><strong>"+(cliente.dni||orden.clienteDni||"-")+"</strong></div>"+
+        "<div class='dato'><span>Teléfono</span><strong>"+(cliente.telefono||orden.clienteTelefono||"-")+"</strong></div>"+
+        "<div class='dato'><span>Email</span><strong>"+(cliente.email||"-")+"</strong></div>"+
+        "<div class='dato'><span>Dirección</span><strong>"+(cliente.direccion||"-")+"</strong></div>"+
+        "<div class='dato'><span>Localidad</span><strong>"+(cliente.localidad||"-")+"</strong></div>"+
+        "<div class='dato'><span>Provincia</span><strong>"+(cliente.provincia||"-")+"</strong></div>"+
+        "</div>"+
+
+        "<h3 style='margin-top:25px;'>Datos del vehículo</h3>"+
+        "<div class='datos-grid'>"+
+        "<div class='dato'><span>Patente</span><strong>"+(vehiculo.patente||orden.patente||"-")+"</strong></div>"+
+        "<div class='dato'><span>Marca</span><strong>"+(vehiculo.marca||orden.marca||"-")+"</strong></div>"+
+        "<div class='dato'><span>Modelo</span><strong>"+(vehiculo.modelo||orden.modelo||"-")+"</strong></div>"+
+        "<div class='dato'><span>Año</span><strong>"+(vehiculo.anio||orden.anio||"-")+"</strong></div>"+
+        "<div class='dato'><span>Color</span><strong>"+(vehiculo.color||"-")+"</strong></div>"+
+        "<div class='dato'><span>Kilometraje</span><strong>"+(vehiculo.kilometraje||orden.kilometraje||"-")+"</strong></div>"+
+        "<div class='dato'><span>Motor</span><strong>"+(vehiculo.motor||orden.motor||"-")+"</strong></div>"+
+        "<div class='dato'><span>VIN / Chasis</span><strong>"+(vehiculo.vin||"-")+"</strong></div>"+
+        "<div class='dato'><span>Cliente propietario</span><strong>"+(cliente.nombre?(cliente.nombre+" "+cliente.apellido):(orden.clienteNombre||"-"))+"</strong></div>"+
+        "</div>"+
+
+        "<h3 style='margin-top:25px;'>Motivo de ingreso / Voz del cliente</h3>"+
+        "<p>"+(orden.vozCliente||"-").replace(/\n/g,"<br>")+"</p>"+
+
+        "<h3 style='margin-top:25px;'>Estado del vehículo al ingreso</h3>"+
+        danosHtml+
+        "<div class='datos-grid' style='margin-top:12px;'>"+
+        "<div class='dato'><span>Combustible</span><strong>"+(orden.combustible||"-")+"</strong></div>"+
+        "<div class='dato'><span>Elementos</span><strong>"+(elementosOrden.join(", ")||"-")+"</strong></div>"+
+        "</div>"+
+        "<p style='margin-top:12px;'><strong>Observaciones del estado:</strong> "+(orden.observacionesEstado||"-")+"</p>"+
+        "<p><strong>Observaciones generales:</strong> "+(orden.observaciones||"-")+"</p>"+
+
+        "<div class='botones' style='margin-top:20px;'>"+
+        "<button class='btn btn-secondary' onclick=\"editarOR('"+orden.numero+"')\">✏️ Editar OR</button>"+
+        "<button class='btn btn-secondary' onclick=\"generarPDFOrden('"+orden.numero+"')\">🖨️ Generar PDF / Imprimir</button>"+
+        "</div>";
+}
+
+/* =========================
+   DIAGNOSTICO OR
+========================= */
+
+function diagnosticosDeOrden(numero){
+    return diagnosticos
+        .filter(item=>item.ordenId===numero)
+        .sort((a,b)=>(b.marcaTemporal||0)-(a.marcaTemporal||0));
+}
+
+function agregarDiagnostico(){
+    if(!ordenTrabajoActual){ return; }
+
+    const tecnico=prompt("Técnico / Mecánico","");
+    if(tecnico===null){ return; }
+
+    const descripcion=prompt("Descripción del diagnóstico/trabajo realizado","");
+    if(descripcion===null){ return; }
+
+    if(!tecnico.trim() || !descripcion.trim()){
+        alert("Completá técnico y descripción.");
+        return;
+    }
+
+    const ahora=new Date();
+
+    const registro={
+        id:"DIAG-"+Date.now(),
+        ordenId:ordenTrabajoActual,
+        fecha:ahora.toLocaleDateString("es-AR"),
+        hora:ahora.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"}),
+        marcaTemporal:ahora.getTime(),
+        tecnico:tecnico.trim(),
+        descripcion:descripcion.trim()
+    };
+
+    diagnosticos.push(registro);
+    guardarDiagnosticosLocalmente();
+    guardarEnGoogleSheets("diagnosticos","crear",registro.id,registro);
+
+    renderizarDiagnosticos();
+}
+
+function editarDiagnostico(id){
+    const registro=diagnosticos.find(item=>item.id===id);
+    if(!registro){ return; }
+
+    const tecnico=prompt("Técnico / Mecánico",registro.tecnico);
+    if(tecnico===null){ return; }
+
+    const descripcion=prompt("Descripción",registro.descripcion);
+    if(descripcion===null){ return; }
+
+    if(!tecnico.trim() || !descripcion.trim()){
+        alert("Completá técnico y descripción.");
+        return;
+    }
+
+    registro.tecnico=tecnico.trim();
+    registro.descripcion=descripcion.trim();
+
+    guardarDiagnosticosLocalmente();
+    guardarEnGoogleSheets("diagnosticos","modificar",registro.id,registro);
+
+    renderizarDiagnosticos();
+}
+
+function eliminarDiagnostico(id){
+    const registro=diagnosticos.find(item=>item.id===id);
+    if(!registro || !confirm("¿Eliminar este diagnóstico?")){ return; }
+
+    diagnosticos=diagnosticos.filter(item=>item.id!==id);
+    guardarDiagnosticosLocalmente();
+    guardarEnGoogleSheets("diagnosticos","eliminar",id,registro);
+
+    renderizarDiagnosticos();
+}
+
+function renderizarDiagnosticos(){
+    const contenedor=document.getElementById("listaDiagnosticos");
+    if(!contenedor){ return; }
+
+    const registros=diagnosticosDeOrden(ordenTrabajoActual);
+
+    if(!registros.length){
+        contenedor.innerHTML="<p>Todavía no hay diagnósticos cargados.</p>";
+        return;
+    }
+
+    contenedor.innerHTML=registros.map(registro=>
+        "<div class='resultado-item' style='cursor:default;'>"+
+        "<strong>"+registro.fecha+" - "+registro.hora+"</strong><br>"+
+        "Mecánico: "+registro.tecnico+"<br>"+
+        String(registro.descripcion||"").replace(/\n/g,"<br>")+
+        "<div class='botones' style='margin-top:10px;'>"+
+        "<button class='btn btn-secondary' onclick=\"editarDiagnostico('"+registro.id+"')\">✏️ Editar</button>"+
+        "<button class='btn btn-secondary' onclick=\"eliminarDiagnostico('"+registro.id+"')\">🗑️ Eliminar</button>"+
+        "</div>"+
+        "</div>"
+    ).join("");
+}
+
+/* =========================
+   REPUESTOS / CONSUMIBLES OR
+========================= */
+
+function repuestosDeOrden(numero){
+    return repuestosOR.filter(item=>item.ordenId===numero);
+}
+
+function agregarRepuestoOR(){
+    if(!ordenTrabajoActual){ return; }
+
+    const codigo=prompt("Código del repuesto","");
+    if(codigo===null){ return; }
+
+    const detalle=prompt("Detalle","");
+    if(detalle===null){ return; }
+
+    const cantidadTexto=prompt("Cantidad","1");
+    if(cantidadTexto===null){ return; }
+
+    const cantidad=Number(cantidadTexto);
+
+    if(!codigo.trim() || !detalle.trim() || !Number.isFinite(cantidad) || cantidad<=0){
+        alert("Completá código, detalle y una cantidad válida.");
+        return;
+    }
+
+    const registro={
+        id:"REP-"+Date.now(),
+        ordenId:ordenTrabajoActual,
+        codigo:codigo.trim(),
+        detalle:detalle.trim(),
+        cantidad:cantidad
+    };
+
+    repuestosOR.push(registro);
+    guardarRepuestosOrLocalmente();
+    guardarEnGoogleSheets("repuestosor","crear",registro.id,registro);
+
+    renderizarRepuestosOR();
+}
+
+function editarRepuestoOR(id){
+    const registro=repuestosOR.find(item=>item.id===id);
+    if(!registro){ return; }
+
+    const codigo=prompt("Código",registro.codigo);
+    if(codigo===null){ return; }
+
+    const detalle=prompt("Detalle",registro.detalle);
+    if(detalle===null){ return; }
+
+    const cantidadTexto=prompt("Cantidad",String(registro.cantidad));
+    if(cantidadTexto===null){ return; }
+
+    const cantidad=Number(cantidadTexto);
+
+    if(!codigo.trim() || !detalle.trim() || !Number.isFinite(cantidad) || cantidad<=0){
+        alert("Completá código, detalle y una cantidad válida.");
+        return;
+    }
+
+    registro.codigo=codigo.trim();
+    registro.detalle=detalle.trim();
+    registro.cantidad=cantidad;
+
+    guardarRepuestosOrLocalmente();
+    guardarEnGoogleSheets("repuestosor","modificar",registro.id,registro);
+
+    renderizarRepuestosOR();
+}
+
+function eliminarRepuestoOR(id){
+    const registro=repuestosOR.find(item=>item.id===id);
+    if(!registro || !confirm("¿Eliminar este repuesto?")){ return; }
+
+    repuestosOR=repuestosOR.filter(item=>item.id!==id);
+    guardarRepuestosOrLocalmente();
+    guardarEnGoogleSheets("repuestosor","eliminar",id,registro);
+
+    renderizarRepuestosOR();
+}
+
+function renderizarRepuestosOR(){
+    const contenedor=document.getElementById("listaRepuestosOR");
+    if(!contenedor){ return; }
+
+    const registros=repuestosDeOrden(ordenTrabajoActual);
+
+    if(!registros.length){
+        contenedor.innerHTML="<p>Todavía no hay repuestos cargados para esta OR.</p>";
+        return;
+    }
+
+    contenedor.innerHTML=registros.map(registro=>
+        "<div class='resultado-item' style='cursor:default;'>"+
+        "<strong>"+registro.codigo+"</strong> — "+registro.detalle+" — Cantidad: "+registro.cantidad+
+        "<div class='botones' style='margin-top:10px;'>"+
+        "<button class='btn btn-secondary' onclick=\"editarRepuestoOR('"+registro.id+"')\">✏️ Editar</button>"+
+        "<button class='btn btn-secondary' onclick=\"eliminarRepuestoOR('"+registro.id+"')\">🗑️ Eliminar</button>"+
+        "</div>"+
+        "</div>"
+    ).join("");
 }
 
 /* =========================
@@ -4092,9 +4495,9 @@ function mostrarOrdenesAbiertas(){
         const vehiculo=ordenVehiculo(orden);
         const fila=document.createElement("div");
         fila.className="resultado-item orden-abierta";
-        fila.onclick=()=>abrirDetalleOrdenDesdePanel(orden.numero);
+        fila.onclick=()=>ingresarAOrden(orden.numero);
         fila.innerHTML=
-            "<div><small>OR</small><strong>"+(orden.numero||"-")+"</strong></div>"+
+            "<div><small>OR</small><strong>"+(orden.numero||"-")+"</strong><br><small style='color:#2563eb;'>Ingresar a OR →</small></div>"+
             "<div><small>Cliente</small>"+(cliente?(cliente.nombre+" "+cliente.apellido):(orden.clienteNombre||"-"))+"</div>"+
             "<div><small>Patente</small>"+((vehiculo&&vehiculo.patente)||orden.patente||"-")+"</div>"+
             "<div><small>Marca / Modelo</small>"+(vehiculo?((vehiculo.marca||"-")+" / "+(vehiculo.modelo||"-")):((orden.marca||"-")+" / "+(orden.modelo||"-")))+"</div>"+
