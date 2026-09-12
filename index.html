@@ -413,6 +413,63 @@ select{
     background:#151e2e;
 }
 
+.ordenes-panel-acciones{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.ordenes-estado-carga{
+    margin-left:auto;
+    color:#6b7280;
+    font-size:13px;
+}
+
+.orden-abierta{
+    display:grid;
+    grid-template-columns:130px minmax(150px,1fr) 110px minmax(160px,1fr) 170px 145px;
+    align-items:center;
+    gap:14px;
+}
+
+.orden-abierta strong{
+    color:#60a5fa;
+}
+
+.orden-abierta small{
+    display:block;
+    color:#6b7280;
+    font-size:11px;
+    margin-bottom:3px;
+}
+
+.orden-abierta-estado{
+    color:#facc15;
+    font-weight:bold;
+}
+
+@media(max-width:900px){
+    .orden-abierta{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:700px){
+    .ordenes-panel-acciones{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .ordenes-estado-carga{
+        margin-left:0;
+    }
+
+    .orden-abierta{
+        grid-template-columns:1fr;
+    }
+}
+
 /* =========================
    OR
 ========================= */
@@ -1300,29 +1357,25 @@ onclick="buscarCliente()">
 
 <div id="nuevoCliente">
 
-<div class="formulario">
+<div class="ordenes-panel-acciones">
 
-<h2>➕ Nuevo cliente</h2>
-
+<button class="btn btn-primary"
+onclick="nuevaOrden()">
+➕ Nueva orden
+</button>
 <div class="form-grid">
-
+<button class="btn btn-secondary"
+onclick="buscarOrden()">
+🔎 Buscar orden
+</button>
 <div class="campo">
-<label>Nombre</label>
-<input id="clienteNombre">
-</div>
-
-<div class="campo">
-<label>Apellido</label>
-<input id="clienteApellido">
-</div>
-
-<div class="campo">
-<label>CUIT / DNI</label>
-<input id="clienteDni">
-</div>
-
+<span id="estadoCargaOrdenes" class="ordenes-estado-carga"></span>
 <div class="campo">
 <label>Teléfono</label>
+
+<div id="ordenesAbiertas" class="resultados">
+Las órdenes abiertas aparecerán acá.
+</div>
 <input id="clienteTelefono">
 </div>
 
@@ -3681,6 +3734,81 @@ document.getElementById("subtitulo")
 
 activarMenu("menuOrdenes");
 
+cargarOrdenesParaPanel();
+
+}
+
+async function cargarOrdenesParaPanel(){
+    const estadoCarga=document.getElementById("estadoCargaOrdenes");
+    if(estadoCarga){
+        estadoCarga.innerText="Actualizando órdenes...";
+    }
+
+    try{
+        await cargarDatosDesdeGoogleSheets();
+    }catch(error){
+        console.error("No se pudieron actualizar las órdenes:",error);
+    }
+
+    mostrarOrdenesAbiertas();
+
+    if(estadoCarga){
+        estadoCarga.innerText="";
+    }
+}
+
+function fechaOrdenComoNumero(fecha){
+    const texto=String(fecha||"").trim();
+    const partes=texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    const numero=partes
+        ? new Date(Number(partes[3]),Number(partes[2])-1,Number(partes[1])).getTime()
+        : Date.parse(texto);
+    return Number.isNaN(numero) ? 0 : numero;
+}
+
+function ordenEstaAbierta(orden){
+    return orden.estado!=="Entregado" && orden.estado!=="Cancelado";
+}
+
+function mostrarOrdenesAbiertas(){
+    const contenedor=document.getElementById("ordenesAbiertas");
+    if(!contenedor){ return; }
+
+    const abiertas=ordenes
+    .filter(ordenEstaAbierta)
+    .sort((a,b)=>{
+        const diferencia=fechaOrdenComoNumero(b.fecha)-fechaOrdenComoNumero(a.fecha);
+        if(diferencia!==0){ return diferencia; }
+        return String(b.numero||"").localeCompare(String(a.numero||""),"es",{numeric:true});
+    });
+
+    if(!abiertas.length){
+        contenedor.innerHTML="No hay órdenes de reparación abiertas.";
+        return;
+    }
+
+    contenedor.innerHTML="";
+
+    abiertas.forEach(orden=>{
+        const cliente=ordenCliente(orden);
+        const vehiculo=ordenVehiculo(orden);
+        const fila=document.createElement("div");
+        fila.className="resultado-item orden-abierta";
+        fila.onclick=()=>abrirDetalleOrdenDesdePanel(orden.numero);
+        fila.innerHTML=
+            "<div><small>OR</small><strong>"+(orden.numero||"-")+"</strong></div>"+
+            "<div><small>Cliente</small>"+(cliente?(cliente.nombre+" "+cliente.apellido):(orden.clienteNombre||"-"))+"</div>"+
+            "<div><small>Patente</small>"+((vehiculo&&vehiculo.patente)||orden.patente||"-")+"</div>"+
+            "<div><small>Marca / Modelo</small>"+(vehiculo?((vehiculo.marca||"-")+" / "+(vehiculo.modelo||"-")):((orden.marca||"-")+" / "+(orden.modelo||"-")))+"</div>"+
+            "<div class='orden-abierta-estado'><small>Estado</small>"+(orden.estado||"-")+"</div>"+
+            "<div><small>Fecha de ingreso</small>"+(orden.fecha||"-")+"</div>";
+        contenedor.appendChild(fila);
+    });
+}
+
+function abrirDetalleOrdenDesdePanel(numero){
+    buscarOrden();
+    mostrarFichaOR(numero);
 }
 
 
@@ -4675,6 +4803,9 @@ function modificarEstadoOR(numero, estado){
     guardarEnGoogleSheets("ordenes", "modificar", orden.numero, orden);
     alert("Orden "+orden.numero+" actualizada correctamente.");
     actualizarDashboard();
+    if(document.getElementById("ordenes").style.display==="block"){
+        mostrarOrdenesAbiertas();
+    }
 }
 
 
