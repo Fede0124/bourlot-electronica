@@ -428,7 +428,7 @@ select{
 
 .orden-abierta{
     display:grid;
-    grid-template-columns:130px minmax(150px,1fr) 110px minmax(160px,1fr) 170px 145px;
+    grid-template-columns:130px minmax(150px,1fr) 110px minmax(160px,1fr) 170px 90px 145px;
     align-items:center;
     gap:14px;
 }
@@ -447,6 +447,12 @@ select{
 .orden-abierta-estado{
     color:#facc15;
     font-weight:bold;
+}
+
+.orden-abierta-pdf{
+    padding:8px 10px;
+    font-size:12px;
+    white-space:nowrap;
 }
 
 @media(max-width:900px){
@@ -4108,6 +4114,7 @@ function mostrarOrdenesAbiertas(){
             "<div><small>Patente</small>"+((vehiculo&&vehiculo.patente)||orden.patente||"-")+"</div>"+
             "<div><small>Marca / Modelo</small>"+(vehiculo?((vehiculo.marca||"-")+" / "+(vehiculo.modelo||"-")):((orden.marca||"-")+" / "+(orden.modelo||"-")))+"</div>"+
             "<div class='orden-abierta-estado'><small>Estado</small>"+(orden.estado||"-")+"</div>"+
+            "<div><button type='button' class='btn btn-secondary orden-abierta-pdf' onclick=\"event.stopPropagation(); generarPDFOrden('"+orden.numero+"')\">PDF</button></div>"+
             "<div><small>Fecha de ingreso</small>"+(orden.fecha||"-")+"</div>";
         contenedor.appendChild(fila);
     });
