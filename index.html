@@ -1409,6 +1409,34 @@ onclick="buscarPorNombre()">
 
 <div class="busqueda-campo">
 
+<h3>🪪 DNI / CUIT</h3>
+
+<input id="buscarDniCliente"
+placeholder="Ingrese DNI o CUIT">
+
+<button class="btn btn-buscar"
+onclick="buscarPorDniCliente()">
+🔎 Buscar
+</button>
+
+</div>
+
+<div class="busqueda-campo">
+
+<h3>🔢 N.º de cliente</h3>
+
+<input id="buscarNumeroCliente"
+placeholder="Ej: CLI-000001">
+
+<button class="btn btn-buscar"
+onclick="buscarPorNumeroCliente()">
+🔎 Buscar
+</button>
+
+</div>
+
+<div class="busqueda-campo">
+
 <h3>🚗 Patente</h3>
 
 <input id="buscarPatente"
@@ -1657,6 +1685,18 @@ onclick="buscarPorMotor()">
 <input id="buscarVehiculoPatente" placeholder="Ingrese patente">
 
 <button class="btn btn-buscar" onclick="buscarPorPatenteVehiculo()">
+🔎 Buscar
+</button>
+
+</div>
+
+<div class="busqueda-campo">
+
+<h3>🔢 N.º de vehículo</h3>
+
+<input id="buscarNumeroVehiculo" placeholder="Ej: VEH-000001">
+
+<button class="btn btn-buscar" onclick="buscarPorNumeroVehiculo()">
 🔎 Buscar
 </button>
 
@@ -3016,6 +3056,40 @@ normalizarTexto(c.nombre).includes(normalizarTexto(texto))
 
 }
 
+function buscarPorDniCliente(){
+
+cargarDatos();
+
+const texto=document.getElementById("buscarDniCliente").value;
+const criterio=normalizarTexto(texto);
+
+if(!criterio){
+    alert("Ingresá un DNI o CUIT.");
+    return;
+}
+
+mostrarResultadosClientes(
+    clientes.filter(cliente=>normalizarTexto(cliente.dni).includes(criterio))
+);
+}
+
+function buscarPorNumeroCliente(){
+
+cargarDatos();
+
+const criterio=normalizarTexto(document.getElementById("buscarNumeroCliente").value);
+
+if(!criterio){
+    alert("Ingresá un número de cliente.");
+    return;
+}
+
+mostrarResultadosClientes(
+    clientes.filter(cliente=>normalizarTexto(cliente.id).includes(criterio)||
+        normalizarTexto(cliente.numeroCliente).includes(criterio))
+);
+}
+
 
 function buscarPorPatente(){
 
@@ -3388,11 +3462,13 @@ mostrarVehiculos();
 
 function buscarPorModelo(){
 
+cargarDatos();
+
 const texto=
 document.getElementById("buscarModelo")
-.value.trim().toLowerCase();
+.value;
 
-if(!texto){
+if(!normalizarTexto(texto)){
 
 alert("Ingresá un modelo.");
 
@@ -3402,7 +3478,7 @@ return;
 
 mostrarResultadosVehiculos(
 vehiculos.filter(v=>
-v.modelo.toLowerCase().includes(texto)
+normalizarTexto(v.modelo).includes(normalizarTexto(texto))
 )
 );
 
@@ -3411,11 +3487,13 @@ v.modelo.toLowerCase().includes(texto)
 
 function buscarPorMotor(){
 
+cargarDatos();
+
 const texto=
 document.getElementById("buscarMotor")
-.value.trim().toLowerCase();
+.value;
 
-if(!texto){
+if(!normalizarTexto(texto)){
 
 alert("Ingresá un motor.");
 
@@ -3423,20 +3501,47 @@ return;
 
 }
 
-function buscarPorPatenteVehiculo(){
-    const texto=document.getElementById("buscarVehiculoPatente").value.trim().toLowerCase();
-    if(!texto){ alert("Ingresá una patente."); return; }
-    mostrarResultadosVehiculos(vehiculos.filter(vehiculo=>
-        (vehiculo.patente||"").toLowerCase().includes(texto)
-    ));
-}
-
 mostrarResultadosVehiculos(
 vehiculos.filter(v=>
-v.motor.toLowerCase().includes(texto)
+normalizarTexto(v.motor).includes(normalizarTexto(texto))
 )
 );
 
+}
+
+function buscarPorPatenteVehiculo(){
+
+cargarDatos();
+
+const texto=document.getElementById("buscarVehiculoPatente").value;
+
+if(!normalizarTexto(texto)){
+    alert("Ingresá una patente.");
+    return;
+}
+
+mostrarResultadosVehiculos(
+    vehiculos.filter(vehiculo=>
+        normalizarTexto(vehiculo.patente).includes(normalizarTexto(texto))
+    )
+);
+}
+
+function buscarPorNumeroVehiculo(){
+
+cargarDatos();
+
+const criterio=normalizarTexto(document.getElementById("buscarNumeroVehiculo").value);
+
+if(!criterio){
+    alert("Ingresá un número de vehículo.");
+    return;
+}
+
+mostrarResultadosVehiculos(
+    vehiculos.filter(vehiculo=>normalizarTexto(vehiculo.id).includes(criterio)||
+        normalizarTexto(vehiculo.numeroVehiculo).includes(criterio))
+);
 }
 
 
