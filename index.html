@@ -453,6 +453,15 @@ select{
     padding:8px 10px;
     font-size:12px;
     white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    align-self:flex-start;
+}
+
+.orden-abierta-pdf-celda{
+    display:flex;
+    flex-direction:column;
 }
 
 @media(max-width:900px){
@@ -3174,25 +3183,6 @@ function generarPDFOrden(numero){
 }
 
 function construirCopiaImpresionOR(orden,cliente,vehiculo,tituloCopia){
-    const preguntasVoz=[
-        "¿Cuándo empezó la falla?",
-        "¿Qué síntomas presenta?",
-        "¿En qué condiciones aparece?",
-        "¿Qué trabajo le hicieron anteriormente?",
-        "¿Se cambió alguna pieza recientemente?"
-    ];
-
-    const respuestasVoz=String(orden.vozCliente||"")
-        .split("\n")
-        .map(linea=>linea.trim())
-        .filter(linea=>linea.length>0);
-
-    const preguntasHtml=preguntasVoz.map((pregunta,indice)=>
-        "<p><strong>"+(indice+1)+". "+pregunta+"</strong><br>"+
-        (respuestasVoz[indice] ? escaparHtmlImpresionOR(respuestasVoz[indice]) : "-")+
-        "</p>"
-    ).join("");
-
     const danos=Array.isArray(orden.danos)?orden.danos:[];
     const danosHtml=danos.length
         ? "<ul class='impresion-lista'>"+danos.map(dano=>
@@ -3262,11 +3252,6 @@ function construirCopiaImpresionOR(orden,cliente,vehiculo,tituloCopia){
         "<div class='impresion-seccion'>"+
         "<h3>Motivo de ingreso / Voz del cliente</h3>"+
         "<p>"+(escaparHtmlImpresionOR(orden.vozCliente||"-").replace(/\n/g,"<br>"))+"</p>"+
-        "</div>"+
-
-        "<div class='impresion-seccion'>"+
-        "<h3>Preguntas de ayuda</h3>"+
-        preguntasHtml+
         "</div>"+
 
         "<div class='impresion-seccion'>"+
@@ -4114,7 +4099,7 @@ function mostrarOrdenesAbiertas(){
             "<div><small>Patente</small>"+((vehiculo&&vehiculo.patente)||orden.patente||"-")+"</div>"+
             "<div><small>Marca / Modelo</small>"+(vehiculo?((vehiculo.marca||"-")+" / "+(vehiculo.modelo||"-")):((orden.marca||"-")+" / "+(orden.modelo||"-")))+"</div>"+
             "<div class='orden-abierta-estado'><small>Estado</small>"+(orden.estado||"-")+"</div>"+
-            "<div><button type='button' class='btn btn-secondary orden-abierta-pdf' onclick=\"event.stopPropagation(); generarPDFOrden('"+orden.numero+"')\">PDF</button></div>"+
+            "<div class='orden-abierta-pdf-celda'><small>&nbsp;</small><button type='button' class='btn btn-secondary orden-abierta-pdf' onclick=\"event.stopPropagation(); generarPDFOrden('"+orden.numero+"')\">📄 PDF</button></div>"+
             "<div><small>Fecha de ingreso</small>"+(orden.fecha||"-")+"</div>";
         contenedor.appendChild(fila);
     });
